@@ -6,7 +6,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
-import java.awt.*;
+import java.awt.Font;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -23,13 +24,14 @@ public class Login_menu implements ActionListener {
 
     public Login_menu() {
         // Create a new frame
-        frame = new JFrame("Login");
+        frame = new JFrame("Login Menu");
 
         // Set frame attributes
         frame.setSize(500, 400);
         frame.setBounds(520, 200, 500, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
+
 
         // Create a new panel
         panel = new JPanel();
@@ -39,10 +41,18 @@ public class Login_menu implements ActionListener {
         // Add the panel to the frame
         frame.add(panel);
 
+
+        JLabel titleLabel = new JLabel("Appointment Scheduler");
+        titleLabel.setFont(new Font("Serif", Font.BOLD, 20));
+        titleLabel.setBounds(150, 60, 250, 30);
+        panel.add(titleLabel);
+
+
         // Create and add the username label
         label = new JLabel("Username");
         label.setBounds(150, 80, 80, 80);
         panel.add(label);
+
 
         // Create and add the username text field
         textField = new JTextField(20);
@@ -81,6 +91,7 @@ public class Login_menu implements ActionListener {
 
            if(e.getSource()==button){
 
+                //opens new window
                MenuWindow menu = new MenuWindow();
 //               frame.dispose();
 
