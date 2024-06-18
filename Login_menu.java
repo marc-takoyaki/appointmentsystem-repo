@@ -1,13 +1,14 @@
 package Appointmentsystem_package;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JPasswordField;
 import javax.swing.JButton;
-import java.awt.Font;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -90,16 +91,19 @@ public class Login_menu implements ActionListener {
 
            if(e.getSource()==button){
 
+               JOptionPane.showMessageDialog(frame, "Welcome");
                 //opens new window
-               MenuWindow menu = new MenuWindow();
+                AppointmentWindow appointmentWindow = new AppointmentWindow();
 //               frame.dispose();
 
 
            }
         }
         else{
-
+            JOptionPane.showMessageDialog(frame, "Wrong Credentials", "Error", JOptionPane.ERROR_MESSAGE);
             System.out.println("wrong credentials");
+
+
         }
     }
 
