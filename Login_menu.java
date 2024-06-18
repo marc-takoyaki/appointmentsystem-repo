@@ -23,7 +23,7 @@ public class Login_menu implements ActionListener {
     private JPasswordField passwordField;
 
     public Login_menu() {
-        // Create a new frame
+        // this woudl create a new frame
         frame = new JFrame("Login Menu");
 
         // Set frame attributes
@@ -33,7 +33,7 @@ public class Login_menu implements ActionListener {
         frame.setResizable(false);
 
 
-        // Create a new panel
+        // tis would creat a new panel named "panel"
         panel = new JPanel();
         panel.setLayout(null);
         panel.setBackground(Color.CYAN);
@@ -48,28 +48,27 @@ public class Login_menu implements ActionListener {
         panel.add(titleLabel);
 
 
-        // Create and add the username label
+        // username label
         label = new JLabel("Username");
         label.setBounds(150, 80, 80, 80);
         panel.add(label);
 
 
-        // Create and add the username text field
+
         textField = new JTextField(20);
         textField.setBounds(220, 110, 100, 20);
         panel.add(textField);
 
-        // Create and add the password label
         label1 = new JLabel("Password");
         label1.setBounds(150, 140, 80, 80);
         panel.add(label1);
 
-        // Create and add the password field
+
         passwordField = new JPasswordField(20);
         passwordField.setBounds(220, 170, 100, 20);
         panel.add(passwordField);
 
-        // Create and add the login button
+
         button = new JButton("Login");
         button.setBounds(220, 220, 100, 20);
         button.addActionListener(this);
