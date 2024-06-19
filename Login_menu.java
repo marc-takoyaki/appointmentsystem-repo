@@ -1,20 +1,12 @@
 package Appointmentsystem_package;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import java.awt.Color;
-import java.awt.Font;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Login_menu implements ActionListener {
 
-    //this makes the scope bigger for these variables
     private JFrame frame;
     private JButton button;
     private JLabel label1;
@@ -24,91 +16,70 @@ public class Login_menu implements ActionListener {
     private JPasswordField passwordField;
 
     public Login_menu() {
-        // this woudl create a new frame
         frame = new JFrame("Login Menu");
-
-        // Set frame attributes
         frame.setSize(500, 400);
         frame.setBounds(520, 200, 500, 400);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
 
-
-        // tis would creat a new panel named "panel"
         panel = new JPanel();
-        panel.setLayout(null);
+        panel.setLayout(null); // Using absolute layout for simplicity, not recommended for complex layouts
         panel.setBackground(Color.CYAN);
-
-        // Add the panel to the frame
         frame.add(panel);
-
 
         JLabel titleLabel = new JLabel("Appointment Scheduler");
         titleLabel.setFont(new Font("Serif", Font.BOLD, 20));
         titleLabel.setBounds(150, 60, 250, 30);
         panel.add(titleLabel);
 
-
-        // username label
-        label = new JLabel("Username");
-        label.setBounds(150, 80, 80, 80);
+        label = new JLabel("Username:");
+        label.setBounds(150, 110, 80, 20);
         panel.add(label);
 
-
-
-        textField = new JTextField(20);
-        textField.setBounds(220, 110, 100, 20);
+        textField = new JTextField();
+        textField.setBounds(220, 110, 150, 20);
         panel.add(textField);
 
-        label1 = new JLabel("Password");
-        label1.setBounds(150, 140, 80, 80);
+        label1 = new JLabel("Password:");
+        label1.setBounds(150, 140, 80, 20);
         panel.add(label1);
 
-
-        passwordField = new JPasswordField(20);
-        passwordField.setBounds(220, 170, 100, 20);
+        passwordField = new JPasswordField();
+        passwordField.setBounds(220, 140, 150, 20);
         panel.add(passwordField);
 
-
         button = new JButton("Login");
-        button.setBounds(220, 220, 100, 20);
+        button.setBounds(220, 180, 100, 20);
         button.addActionListener(this);
         panel.add(button);
 
-        // Make the frame visible
         frame.setVisible(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == button) {
+            String username = textField.getText().trim();
+            String password = new String(passwordField.getPassword());
 
-        // Handle login action
-        String username = textField.getText();
-        String password = new String(passwordField.getPassword());
-        System.out.println("Username: " + username + ", Password: " + password);
+            if (username.equals("marc") && password.equals("ebreo")) {
+                JOptionPane.showMessageDialog(frame, "Welcome!");
 
-        if(username.equals("marc") && password.equals("ebreo")){
-
-           if(e.getSource()==button){
-
-               JOptionPane.showMessageDialog(frame, "Welcome");
-                //opens new window
-                AppointmentWindow appointmentWindow = new AppointmentWindow();
-//               frame.dispose();
-
-
-           }
-        }
-        else{
-            JOptionPane.showMessageDialog(frame, "Wrong Credentials", "Error", JOptionPane.ERROR_MESSAGE);
-            System.out.println("wrong credentials");
-
-
+                // Open the main menu window
+                Menu menu = new Menu();
+                frame.dispose(); // Close the login window after successful login
+            } else {
+                JOptionPane.showMessageDialog(frame, "Wrong Credentials", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
     public static void main(String[] args) {
-        // Run the login menu
-        new Login_menu();
+        // Use Event Dispatch Thread for Swing components
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new Login_menu();
+            }
+        });
     }
 }
