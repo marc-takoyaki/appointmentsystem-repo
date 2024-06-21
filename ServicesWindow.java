@@ -36,7 +36,7 @@ public class ServicesWindow implements ActionListener{
 
         frame.setSize(700, 700);
         frame.setBounds(520, 200, 500, 400);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         frame.setLayout(null);
 
