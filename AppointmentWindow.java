@@ -12,10 +12,13 @@ public class AppointmentWindow {
     private JPanel panel;
     private JTextField nameField;
     private JComboBox<String> monthComboBox;
-    private JComboBox<Integer> dayComboBox;
-    private JTextField timeField;
-    private JComboBox<String> dentalCareComboBox; // New combo box for dental care options
-    private JComboBox<String> doctorComboBox; // New combo box for doctors
+    private JComboBox<String> dayComboBox;
+    private JComboBox<String> yearComboBox;
+    private JComboBox<String> hourComboBox;
+    private JComboBox<String> minuteComboBox;
+    private JComboBox<String> dentalCareComboBox;
+    private JComboBox<String> doctorComboBox;
+    private JButton addButton;
     private JTextArea appointmentList;
 
     private String[] dentalCareOptions = {
@@ -31,8 +34,13 @@ public class AppointmentWindow {
 
     private String[] doctorOptions = {
             "Dr. Marc Ebreo",
+            "Dr. Ren Gubatanga",
             "Dr. Darryl Parrocho",
-            "Dr. Ren Gubatanga"
+            "Dr. Cheng Garcia" ,
+            "Dr. Gabriel Cac",
+            "Dr. Joy Inocencio",
+            "Dr. Vladimir Guimbal",
+            "Dr. Allen Garcia"
     };
 
     public AppointmentWindow() {
@@ -40,7 +48,7 @@ public class AppointmentWindow {
         frame = new JFrame("Appointment Window");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(800, 600);
-        frame.setBounds(380, 150, 800, 600);
+        frame.setLocationRelativeTo(null); // Center the window on the screen
         frame.setResizable(false);
 
         // Create the panel
@@ -49,43 +57,50 @@ public class AppointmentWindow {
 
         // Create input fields and labels
         nameField = new JTextField(20);
+
+        // Date combo boxes
         monthComboBox = new JComboBox<>(new String[]{"January", "February", "March", "April", "May", "June",
                 "July", "August", "September", "October", "November", "December"});
-        dayComboBox = new JComboBox<>(getDaysOfMonth(31)); // Default to 31 days
-        timeField = new JTextField(10); // Use a smaller size for time field
-        dentalCareComboBox = new JComboBox<>(dentalCareOptions); // Populate dental care options
-        doctorComboBox = new JComboBox<>(doctorOptions); // Populate doctor options
+        dayComboBox = new JComboBox<>(new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25",
+                "26", "27", "28", "29", "30", "31"});
+        yearComboBox = new JComboBox<>(new String[]{"2023", "2024", "2025"});
+        // Time combo boxes
+        hourComboBox = new JComboBox<>(new String[]{"08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18"});
+        minuteComboBox = new JComboBox<>(new String[]{"00", "15", "30", "45"});
 
-        JLabel nameLabel = new JLabel("Patient's Name: ");
-        JLabel dateLabel = new JLabel("Date of Appointment: ");
-        JLabel timeLabel = new JLabel("Time of Appointment 24Hour Format: (HH:MM): ");
-        JLabel dentalCareLabel = new JLabel("Select Dental Care: ");
-        JLabel doctorLabel = new JLabel("Select Doctor: ");
+        dentalCareComboBox = new JComboBox<>(dentalCareOptions);
+        doctorComboBox = new JComboBox<>(doctorOptions);
 
         // Create a button to add the appointment
-        JButton addButton = new JButton("Add Appointment");
+        addButton = new JButton("Add Appointment");
 
-        // Create a text area to display appointments
-        appointmentList = new JTextArea(10, 30);
+        // Text area to display appointments
+        appointmentList = new JTextArea(20, 50);
         appointmentList.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(appointmentList);
 
         // Panel for input fields and labels
-        JPanel inputPanel = new JPanel(new GridLayout(6, 2, 10, 10)); // Adjust gaps between components
+        JPanel inputPanel = new JPanel(new GridLayout(9, 2, 10, 10)); // Adjust gaps between components
         inputPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Add padding
 
-        inputPanel.add(nameLabel);
+        inputPanel.add(new JLabel("Patient's Name: "));
         inputPanel.add(nameField);
-        inputPanel.add(dateLabel);
+        inputPanel.add(new JLabel("Date of Appointment: "));
         JPanel datePanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Panel for date components
         datePanel.add(monthComboBox);
         datePanel.add(dayComboBox);
+        datePanel.add(yearComboBox);
         inputPanel.add(datePanel);
-        inputPanel.add(timeLabel);
-        inputPanel.add(timeField);
-        inputPanel.add(dentalCareLabel);
+        inputPanel.add(new JLabel("Time of Appointment: "));
+        JPanel timePanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Panel for time components
+        timePanel.add(hourComboBox);
+        timePanel.add(new JLabel(":"));
+        timePanel.add(minuteComboBox);
+        inputPanel.add(timePanel);
+        inputPanel.add(new JLabel("Select Dental Care: "));
         inputPanel.add(dentalCareComboBox);
-        inputPanel.add(doctorLabel);
+        inputPanel.add(new JLabel("Select Doctor: "));
         inputPanel.add(doctorComboBox);
         inputPanel.add(new JLabel()); // Placeholder for alignment
         inputPanel.add(addButton);
@@ -95,12 +110,7 @@ public class AppointmentWindow {
         panel.add(scrollPane, BorderLayout.CENTER);
 
         // Add action listener to the button
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addAppointment();
-            }
-        });
+        addButton.addActionListener(e -> addAppointment());
 
         // Make the frame visible
         frame.setVisible(true);
@@ -109,98 +119,32 @@ public class AppointmentWindow {
     private void addAppointment() {
         String name = nameField.getText().trim();
         String month = (String) monthComboBox.getSelectedItem();
-        int day = (int) dayComboBox.getSelectedItem();
-        String timeStr = timeField.getText().trim();
-        String dentalCare = (String) dentalCareComboBox.getSelectedItem(); // Get selected dental care option
-        String doctor = (String) doctorComboBox.getSelectedItem(); // Get selected doctor option
+        String day = (String) dayComboBox.getSelectedItem();
+        String year = (String) yearComboBox.getSelectedItem();
+        String hour = (String) hourComboBox.getSelectedItem();
+        String minute = (String) minuteComboBox.getSelectedItem();
+        String dentalCare = (String) dentalCareComboBox.getSelectedItem();
+        String doctor = (String) doctorComboBox.getSelectedItem();
 
         // Validate input fields
-        if (name.isEmpty() || month.isEmpty() || timeStr.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "Please fill out all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+        if (name.isEmpty()) {
+            JOptionPane.showMessageDialog(frame, "Please enter patient's name.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Map month string to a numerical value (1-12)
-        int monthValue = monthToNumber(month);
+        // Construct LocalDateTime object from selected date and time
+        String dateTime = String.format("%s %s, %s at %s:%s", month, day, year, hour, minute);
+        String appointmentDetails = String.format("Patient's Name: %s\nDate and Time: %s\nDental Care: %s\nDoctor: %s\n\n",
+                name, dateTime, dentalCare, doctor);
 
-        // Validate time format
-        try {
-            String[] timeParts = timeStr.split(":");
-            if (timeParts.length != 2) {
-                throw new IllegalArgumentException();
-            }
-            int hours = Integer.parseInt(timeParts[0]);
-            int minutes = Integer.parseInt(timeParts[1]);
-            if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
-                throw new IllegalArgumentException();
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(frame, "Invalid time format. Use HH:MM (24-hour format).", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Construct LocalDate object from selected month and day
-        LocalDate date = LocalDate.of(LocalDate.now().getYear(), monthValue, day);
-
-        // Add appointment details to the list
-        String appointmentDetails = String.format("Name: %s, Date: %s, Time: %s, Dental Care: %s, Doctor: %s\n",
-                name, date.format(DateTimeFormatter.ISO_DATE), timeStr, dentalCare, doctor);
+        // Append appointment details to the text area
         appointmentList.append(appointmentDetails);
 
         // Clear input fields after adding the appointment
         nameField.setText("");
-        timeField.setText("");
 
         JOptionPane.showMessageDialog(frame, "Appointment added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    // Utility method to get an array of integers from 1 to max
-    private Integer[] getDaysOfMonth(int max) {
-        Integer[] days = new Integer[max];
-        for (int i = 0; i < max; i++) {
-            days[i] = i + 1;
-        }
-        return days;
-    }
-
-    // Utility method to convert month name to its corresponding number
-    private int monthToNumber(String month) {
-        switch (month) {
-            case "January":
-                return 1;
-            case "February":
-                return 2;
-            case "March":
-                return 3;
-            case "April":
-                return 4;
-            case "May":
-                return 5;
-            case "June":
-                return 6;
-            case "July":
-                return 7;
-            case "August":
-                return 8;
-            case "September":
-                return 9;
-            case "October":
-                return 10;
-            case "November":
-                return 11;
-            case "December":
-                return 12;
-            default:
-                return -1; // Invalid month
-        }
-    }
-
-    public static void main(String[] args) {
-        // Use Event Dispatch Thread for Swing components
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new AppointmentWindow();
-            }
-        });
-    }
 }
+

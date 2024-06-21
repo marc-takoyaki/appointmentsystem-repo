@@ -82,17 +82,8 @@ public class Menu extends JFrame implements ActionListener {
             // Replace with actual service handling logic
             ServicesWindow servicesWindow = new ServicesWindow();
         } else if (e.getSource() == DoctorMenuItem) {
-            // Replace with actual doctor handling logic
-            JOptionPane.showMessageDialog(this, "Doctor Appointment Menu Clicked", "Doctor Menu", JOptionPane.INFORMATION_MESSAGE);
+            DoctorSpecialization doctorSpecialization = new DoctorSpecialization();
         }
     }
 
-    public static void main(String[] args) {
-        // Use Event Dispatch Thread for Swing components
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new Menu();
-            }
-        });
-    }
 }
