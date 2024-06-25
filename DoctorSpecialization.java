@@ -45,46 +45,37 @@ public class DoctorSpecialization {
     };
 
     public DoctorSpecialization() {
-        // Check if the window is already open
         if (isOpen) {
             JOptionPane.showMessageDialog(null, "Doctor Specialization window is already open.");
             return;
         }
 
-        // Set the flag to true since the window is now opening
         isOpen = true;
 
-        // Create the frame
         frame = new JFrame("Doctor Specialization");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(560, 600);
         frame.setLayout(new BorderLayout());
         frame.setLocationRelativeTo(null); // Center the frame on screen
 
-        // Create the menu bar
         JMenuBar menuBar = new JMenuBar();
         frame.setJMenuBar(menuBar);
 
-        // Create the Home menu with a single menu item
         JMenu homeMenu = new JMenu("Home");
         JMenuItem homeMenuItem = new JMenuItem("Go to Home");
         homeMenu.add(homeMenuItem);
         menuBar.add(homeMenu);
 
-        // Add action listener to the Home menu item
         homeMenuItem.addActionListener(this::goToHome);
 
-        // Create the panel for doctor buttons
         buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(doctors.length, 1));
         frame.add(buttonPanel, BorderLayout.WEST);
 
-        // Create the panel for showing specialization
         infoPanel = new JPanel();
         infoPanel.setLayout(new BorderLayout());
         frame.add(infoPanel, BorderLayout.CENTER);
 
-        // Create the text area for specializations
         specializationArea = new JTextArea();
         specializationArea.setEditable(false);
         specializationArea.setLineWrap(true);
@@ -104,15 +95,12 @@ public class DoctorSpecialization {
             buttonPanel.add(doctorButton);
         }
 
-        // Make the frame visible
         frame.setVisible(true);
     }
 
     private void showDoctorDetails(int index) {
-        // Show the selected doctor's details in the text area
         specializationArea.setText(doctorDetails[index]);
 
-        // Create the schedule button if not already created
         if (infoPanel.getComponentCount() > 1) {
             infoPanel.remove(1); // Remove existing schedule button if any
         }
@@ -124,7 +112,7 @@ public class DoctorSpecialization {
         scheduleButton.addActionListener(e -> scheduleAppointment(index));
         infoPanel.add(scheduleButton, BorderLayout.SOUTH);
 
-        // Refresh the info panel
+        //  info panel
         infoPanel.revalidate();
         infoPanel.repaint();
     }
@@ -138,10 +126,6 @@ public class DoctorSpecialization {
 
     private void goToHome(ActionEvent e) {
         frame.dispose(); // Dispose of current window
-        new Menu(); // Open the main menu
-    }
-
-    public static void main(String[] args) {
-        new DoctorSpecialization();
+        new Admin(); // Open the main menu
     }
 }

@@ -1,17 +1,10 @@
 package Appointmentsystem_package;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JScrollPane;
-import javax.swing.BorderFactory;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PaymentWindow {
     private JFrame frame;
@@ -24,6 +17,7 @@ public class PaymentWindow {
     private JTextArea paymentDetailsArea;
     private JButton calculateButton;
     private JButton payButton;
+    private List<PaymentListener> paymentListeners = new ArrayList<>();
 
     public PaymentWindow(String name, String date, String time, String dentalCare, String doctor) {
         // Create the frame
@@ -89,8 +83,8 @@ public class PaymentWindow {
         frame.setVisible(true);
     }
 
-    public PaymentWindow() {
-
+    public void addPaymentListener(PaymentListener listener) {
+        paymentListeners.add(listener);
     }
 
     private void calculatePayment() {
@@ -112,11 +106,18 @@ public class PaymentWindow {
                 price
         );
 
-        // Display payment details in the text area and print to the console
+        // Display payment details in the text area
         paymentDetailsArea.setText(paymentDetails);
-        System.out.println(paymentDetails);
+
+        // Print payment details to console
+        printPaymentDetails(paymentDetails);
 
         JOptionPane.showMessageDialog(frame, "Payment details calculated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void printPaymentDetails(String paymentDetails) {
+        System.out.println("Payment Details:");
+        System.out.println(paymentDetails);
     }
 
     private double getTreatmentPrice(String dentalCare) {
@@ -143,13 +144,17 @@ public class PaymentWindow {
     }
 
     private void handlePayment() {
-        // Handle payment logic here
-        JOptionPane.showMessageDialog(frame, "Proceeding to payment.", "Payment", JOptionPane.INFORMATION_MESSAGE);
+        // Notify all listeners that payment is made
+        for (PaymentListener listener : paymentListeners) {
+            listener.paymentMade(nameField.getText());
+        }
+
+        JOptionPane.showMessageDialog(frame, "Paid Successfully", "Payment", JOptionPane.INFORMATION_MESSAGE);
         // Replace with your actual payment logic
+
     }
 
-    public static void main(String[] args) {
-
-        SwingUtilities.invokeLater(() -> new PaymentWindow("John Doe", "2023-06-25", "10:00 AM", "Dental Crown", "Dr. Smith"));
+    public interface PaymentListener {
+        void paymentMade(String patientName);
     }
 }

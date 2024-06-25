@@ -103,7 +103,7 @@ public class Menu extends JFrame implements ActionListener {
         }
     }
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(Menu::new);
+        SwingUtilities.invokeLater(Admin::new);
 
 
 }

@@ -19,7 +19,7 @@ public class Login_menu implements ActionListener {
         frame = new JFrame("Login Menu");
         frame.setSize(500, 400);
         frame.setBounds(520, 200, 500, 400);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE  );
         frame.setResizable(false);
 
         panel = new JPanel();
@@ -62,11 +62,15 @@ public class Login_menu implements ActionListener {
             String username = textField.getText().trim();
             String password = new String(passwordField.getPassword());
 
-            if (username.equals("marc") && password.equals("ebreo")) {
+            if (username.equals("user") && password.equals("user123")) {
                 JOptionPane.showMessageDialog(frame, "Welcome!");
-
                 // Open the main menu window
-                Menu menu = new Menu();
+                Admin menu = new Admin();
+                frame.dispose(); // Close the login window after successful login
+            } else if (username.equals("admin") && password.equals("admin123")) {
+                JOptionPane.showMessageDialog(frame, "Welcome back, Doctor!");
+                // Open the main menu window
+
                 frame.dispose(); // Close the login window after successful login
             } else {
                 JOptionPane.showMessageDialog(frame, "Wrong Credentials", "Error", JOptionPane.ERROR_MESSAGE);

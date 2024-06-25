@@ -96,7 +96,7 @@ public class ServicesWindow {
             public void actionPerformed(ActionEvent e) {
                 // Handle going back to home
                 frame.dispose(); // Close the current window
-                new Menu(); // Open the main menu
+                new Admin(); // Open the main menu
             }
         });
         homeMenu.add(homeMenuItem);
@@ -109,7 +109,5 @@ public class ServicesWindow {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(ServicesWindow::new);
-    }
+
 }
