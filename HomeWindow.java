@@ -8,13 +8,13 @@ class HomeWindow extends JFrame {
     private JButton loginButton;
 
     public HomeWindow() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setTitle("Home Menu");
         setSize(500, 400);
         setLocationRelativeTo(null); // Center the window on the screen
         getContentPane().setBackground(new Color(135, 206, 250)); // Set background color to light blue
 
-        // Create a mid panel for image
+
         JPanel midPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -37,7 +37,6 @@ class HomeWindow extends JFrame {
                 Login_menu login = new Login_menu();
                 dispose();
             }
-            // Replace with your actual login logic
         });
 
         topPanel.add(loginButton);

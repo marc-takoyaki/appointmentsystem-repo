@@ -71,7 +71,7 @@ public class Menu extends JFrame implements ActionListener {
         // Add the menu bar to the frame
         this.setJMenuBar(menuBar);
 
-        // Create a panel for the logout button
+
         JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Right-aligned panel
         logoutButton = new JButton("Logout");
 
@@ -87,19 +87,26 @@ public class Menu extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == ScheduleMenuItem) {
             AppointmentWindow appointmentWindow = new AppointmentWindow();
+            this.dispose();
         } else if (e.getSource() == HomeMenuItem) {
-
-            this.dispose(); // Close current menu window on logout
+            HomeWindow homeWindow = new HomeWindow();
+            this.dispose();
         } else if (e.getSource() == ServiceMenuItem) {
-            // Replace with actual service handling logic
             ServicesWindow servicesWindow = new ServicesWindow();
+            this.dispose();
         } else if (e.getSource() == DoctorMenuItem) {
             DoctorSpecialization doctorSpecialization = new DoctorSpecialization();
-        } else if (e.getSource() == logoutButton) { // Handle logout button click
+            this.dispose();
+        } else if (e.getSource() == logoutButton) {
             Login_menu menu = new Login_menu();
-            this.dispose(); // Close current menu window on logout
+            this.dispose();
         }
     }
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(Menu::new);
+
+
+}
 
 
 }

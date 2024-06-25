@@ -1,29 +1,15 @@
 package Appointmentsystem_package;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
-import javax.swing.BorderFactory;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class DoctorSpecialization {
     private JFrame frame;
     private JPanel buttonPanel;
     private JPanel infoPanel;
     private JTextArea specializationArea;
+    private boolean isOpen = false; // Flag to check if the window is already open
 
     private static final String[] doctors = {
             "Dr. Marc Ebreo",
@@ -59,12 +45,34 @@ public class DoctorSpecialization {
     };
 
     public DoctorSpecialization() {
+        // Check if the window is already open
+        if (isOpen) {
+            JOptionPane.showMessageDialog(null, "Doctor Specialization window is already open.");
+            return;
+        }
+
+        // Set the flag to true since the window is now opening
+        isOpen = true;
+
         // Create the frame
         frame = new JFrame("Doctor Specialization");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(560, 600);
         frame.setLayout(new BorderLayout());
         frame.setLocationRelativeTo(null); // Center the frame on screen
+
+        // Create the menu bar
+        JMenuBar menuBar = new JMenuBar();
+        frame.setJMenuBar(menuBar);
+
+        // Create the Home menu with a single menu item
+        JMenu homeMenu = new JMenu("Home");
+        JMenuItem homeMenuItem = new JMenuItem("Go to Home");
+        homeMenu.add(homeMenuItem);
+        menuBar.add(homeMenu);
+
+        // Add action listener to the Home menu item
+        homeMenuItem.addActionListener(this::goToHome);
 
         // Create the panel for doctor buttons
         buttonPanel = new JPanel();
@@ -89,6 +97,7 @@ public class DoctorSpecialization {
         for (int i = 0; i < doctors.length; i++) {
             JButton doctorButton = new JButton(doctors[i]);
             doctorButton.setHorizontalAlignment(SwingConstants.LEFT);
+            // Replace with actual image loading logic
             doctorButton.setIcon(new ImageIcon(doctorImages[i]));
             int index = i; // Capture index for action listener
             doctorButton.addActionListener(e -> showDoctorDetails(index));
@@ -124,6 +133,15 @@ public class DoctorSpecialization {
         JOptionPane.showMessageDialog(frame, "Opening appointment window for " + doctors[index]);
         new AppointmentWindow();
         frame.dispose(); // Close the current frame
+        isOpen = false; // Reset the flag since the window is closed
     }
 
+    private void goToHome(ActionEvent e) {
+        frame.dispose(); // Dispose of current window
+        new Menu(); // Open the main menu
+    }
+
+    public static void main(String[] args) {
+        new DoctorSpecialization();
+    }
 }

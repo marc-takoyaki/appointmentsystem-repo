@@ -11,6 +11,7 @@ import javax.swing.JScrollPane;
 import javax.swing.BorderFactory;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import javax.swing.SwingUtilities;
 
 public class PaymentWindow {
     private JFrame frame;
@@ -22,6 +23,7 @@ public class PaymentWindow {
     private JTextField doctorField;
     private JTextArea paymentDetailsArea;
     private JButton calculateButton;
+    private JButton payButton;
 
     public PaymentWindow(String name, String date, String time, String dentalCare, String doctor) {
         // Create the frame
@@ -34,7 +36,6 @@ public class PaymentWindow {
         // Create the panel
         panel = new JPanel(new GridLayout(6, 2, 10, 10)); // 6 rows, 2 columns, 10px gaps
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Add padding
-        frame.add(panel);
 
         // Create input fields and labels
         nameField = new JTextField(name);
@@ -75,6 +76,14 @@ public class PaymentWindow {
         // Add the button and text area to the panel
         panel.add(calculateButton);
         panel.add(scrollPane);
+
+        // Create the pay button
+        payButton = new JButton("Pay");
+        payButton.addActionListener(e -> handlePayment());
+
+        // Add the panel and pay button to the frame
+        frame.add(panel, BorderLayout.CENTER);
+        frame.add(payButton, BorderLayout.SOUTH);
 
         // Make the frame visible
         frame.setVisible(true);
@@ -131,5 +140,16 @@ public class PaymentWindow {
             default:
                 return 0.00;
         }
+    }
+
+    private void handlePayment() {
+        // Handle payment logic here
+        JOptionPane.showMessageDialog(frame, "Proceeding to payment.", "Payment", JOptionPane.INFORMATION_MESSAGE);
+        // Replace with your actual payment logic
+    }
+
+    public static void main(String[] args) {
+
+        SwingUtilities.invokeLater(() -> new PaymentWindow("John Doe", "2023-06-25", "10:00 AM", "Dental Crown", "Dr. Smith"));
     }
 }

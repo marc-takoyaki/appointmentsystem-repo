@@ -3,7 +3,6 @@ package Appointmentsystem_package;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class AppointmentWindow {
     private JFrame frame;
@@ -55,6 +54,19 @@ public class AppointmentWindow {
         frame.setSize(800, 600);
         frame.setLocationRelativeTo(null); // Center the window on the screen
         frame.setResizable(false);
+
+        // Create the menu bar
+        JMenuBar menuBar = new JMenuBar();
+        frame.setJMenuBar(menuBar);
+
+        // Create the Home menu with a single menu item
+        JMenu homeMenu = new JMenu("Home");
+        JMenuItem homeMenuItem = new JMenuItem("Go to Home");
+        homeMenu.add(homeMenuItem);
+        menuBar.add(homeMenu);
+
+        // Add action listener to the Home menu item
+        homeMenuItem.addActionListener(e -> goToHome());
 
         // Create the panel
         panel = new JPanel(new BorderLayout());
@@ -172,6 +184,11 @@ public class AppointmentWindow {
 
     private void showPaymentDialog() {
         new PaymentWindow(lastAddedName, lastAddedDate, lastAddedTime, lastAddedDentalCare, lastAddedDoctor);
+    }
+
+    private void goToHome() {
+        frame.dispose(); // Dispose of current window
+        new Menu(); // Open the main menu
     }
 
     public static void main(String[] args) {
