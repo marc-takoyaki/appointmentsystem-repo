@@ -7,15 +7,16 @@ import java.awt.event.ActionListener;
 
 public class Menu extends JFrame implements ActionListener {
 
-    JMenuBar menuBar;
-    JMenu DoctorMenu;
-    JMenu ScheduleMenu;
-    JMenu ServiceMenu;
-    JMenu HomeMenu;
-    JMenuItem DoctorMenuItem;
-    JMenuItem ScheduleMenuItem;
-    JMenuItem ServiceMenuItem;
-    JMenuItem HomeMenuItem;
+    private JMenuBar menuBar;
+    private JMenu DoctorMenu;
+    private JMenu ScheduleMenu;
+    private JMenu ServiceMenu;
+    private JMenu HomeMenu;
+    private JMenuItem DoctorMenuItem;
+    private JMenuItem ScheduleMenuItem;
+    private JMenuItem ServiceMenuItem;
+    private JMenuItem HomeMenuItem;
+    private JButton logoutButton; // New logout button
 
     Menu() {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -69,6 +70,16 @@ public class Menu extends JFrame implements ActionListener {
 
         // Add the menu bar to the frame
         this.setJMenuBar(menuBar);
+
+        // Create a panel for the logout button
+        JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Right-aligned panel
+        logoutButton = new JButton("Logout");
+
+        logoutButton.addActionListener(this); // Add action listener for logout button
+
+        logoutPanel.add(logoutButton);
+        this.add(logoutPanel, BorderLayout.SOUTH); // Add logout panel to the bottom of the frame
+
         this.setVisible(true);
     }
 
@@ -77,13 +88,18 @@ public class Menu extends JFrame implements ActionListener {
         if (e.getSource() == ScheduleMenuItem) {
             AppointmentWindow appointmentWindow = new AppointmentWindow();
         } else if (e.getSource() == HomeMenuItem) {
-            Login_menu menu = new Login_menu();
+
+            this.dispose(); // Close current menu window on logout
         } else if (e.getSource() == ServiceMenuItem) {
             // Replace with actual service handling logic
             ServicesWindow servicesWindow = new ServicesWindow();
         } else if (e.getSource() == DoctorMenuItem) {
             DoctorSpecialization doctorSpecialization = new DoctorSpecialization();
+        } else if (e.getSource() == logoutButton) { // Handle logout button click
+            Login_menu menu = new Login_menu();
+            this.dispose(); // Close current menu window on logout
         }
     }
+
 
 }

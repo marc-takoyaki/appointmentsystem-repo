@@ -1,7 +1,21 @@
 package Appointmentsystem_package;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
+import javax.swing.BorderFactory;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -33,10 +47,21 @@ public class DoctorSpecialization {
             "Dr. Allen Garcia: Specializes in Denture. With extensive experience in fitting and creating custom dentures, Dr. Allen Garcia ensures that patients receive comfortable and natural-looking dentures that improve their quality of life."
     };
 
+    private static final String[] doctorImages = {
+            "path/to/images/doctor1.jpg",
+            "path/to/images/doctor2.jpg",
+            "path/to/images/doctor3.jpg",
+            "path/to/images/doctor4.jpg",
+            "path/to/images/doctor5.jpg",
+            "path/to/images/doctor6.jpg",
+            "path/to/images/doctor7.jpg",
+            "path/to/images/doctor8.jpg"
+    };
+
     public DoctorSpecialization() {
         // Create the frame
         frame = new JFrame("Doctor Specialization");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(560, 600);
         frame.setLayout(new BorderLayout());
         frame.setLocationRelativeTo(null); // Center the frame on screen
@@ -60,9 +85,11 @@ public class DoctorSpecialization {
         JScrollPane scrollPane = new JScrollPane(specializationArea);
         infoPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // Add buttons for each doctor with placeholder images
+        // Add buttons for each doctor with images
         for (int i = 0; i < doctors.length; i++) {
             JButton doctorButton = new JButton(doctors[i]);
+            doctorButton.setHorizontalAlignment(SwingConstants.LEFT);
+            doctorButton.setIcon(new ImageIcon(doctorImages[i]));
             int index = i; // Capture index for action listener
             doctorButton.addActionListener(e -> showDoctorDetails(index));
             buttonPanel.add(doctorButton);
@@ -99,8 +126,4 @@ public class DoctorSpecialization {
         frame.dispose(); // Close the current frame
     }
 
-    public static void main(String[] args) {
-        // Run the doctor specialization window
-        SwingUtilities.invokeLater(() -> new DoctorSpecialization());
-    }
 }

@@ -4,8 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class AppointmentWindow {
     private JFrame frame;
@@ -19,6 +17,7 @@ public class AppointmentWindow {
     private JComboBox<String> dentalCareComboBox;
     private JComboBox<String> doctorComboBox;
     private JButton addButton;
+    private JButton paymentButton;
     private JTextArea appointmentList;
 
     private String[] dentalCareOptions = {
@@ -36,12 +35,18 @@ public class AppointmentWindow {
             "Dr. Marc Ebreo",
             "Dr. Ren Gubatanga",
             "Dr. Darryl Parrocho",
-            "Dr. Cheng Garcia" ,
+            "Dr. Cheng Garcia",
             "Dr. Gabriel Cac",
             "Dr. Joy Inocencio",
             "Dr. Vladimir Guimbal",
             "Dr. Allen Garcia"
     };
+
+    private String lastAddedName;
+    private String lastAddedDate;
+    private String lastAddedTime;
+    private String lastAddedDentalCare;
+    private String lastAddedDoctor;
 
     public AppointmentWindow() {
         // Create the frame
@@ -112,6 +117,14 @@ public class AppointmentWindow {
         // Add action listener to the button
         addButton.addActionListener(e -> addAppointment());
 
+        // Create the payment button (initially invisible)
+        paymentButton = new JButton("Payment");
+        paymentButton.setVisible(false);
+        paymentButton.addActionListener(e -> showPaymentDialog());
+
+        // Add the payment button to the panel
+        panel.add(paymentButton, BorderLayout.SOUTH);
+
         // Make the frame visible
         frame.setVisible(true);
     }
@@ -137,14 +150,31 @@ public class AppointmentWindow {
         String appointmentDetails = String.format("Patient's Name: %s\nDate and Time: %s\nDental Care: %s\nDoctor: %s\n\n",
                 name, dateTime, dentalCare, doctor);
 
+        // Store the details of the last added appointment
+        lastAddedName = name;
+        lastAddedDate = String.format("%s %s, %s", month, day, year);
+        lastAddedTime = String.format("%s:%s", hour, minute);
+        lastAddedDentalCare = dentalCare;
+        lastAddedDoctor = doctor;
+
         // Append appointment details to the text area
         appointmentList.append(appointmentDetails);
 
         // Clear input fields after adding the appointment
         nameField.setText("");
 
+        // Show success message
         JOptionPane.showMessageDialog(frame, "Appointment added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+        // Make the payment button visible
+        paymentButton.setVisible(true);
     }
 
-}
+    private void showPaymentDialog() {
+        new PaymentWindow(lastAddedName, lastAddedDate, lastAddedTime, lastAddedDentalCare, lastAddedDoctor);
+    }
 
+    public static void main(String[] args) {
+        new AppointmentWindow();
+    }
+}
