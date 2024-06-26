@@ -65,12 +65,12 @@ public class Login_menu implements ActionListener {
             if (username.equals("user") && password.equals("user123")) {
                 JOptionPane.showMessageDialog(frame, "Welcome!");
                 // Open the main menu window
-                Admin menu = new Admin();
+
+                Menu menu = new Menu();
                 frame.dispose(); // Close the login window after successful login
             } else if (username.equals("admin") && password.equals("admin123")) {
                 JOptionPane.showMessageDialog(frame, "Welcome back, Doctor!");
-                // Open the main menu window
-
+                Admin admin = new Admin();
                 frame.dispose(); // Close the login window after successful login
             } else {
                 JOptionPane.showMessageDialog(frame, "Wrong Credentials", "Error", JOptionPane.ERROR_MESSAGE);

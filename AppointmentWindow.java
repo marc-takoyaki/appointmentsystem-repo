@@ -1,159 +1,192 @@
-    package Appointmentsystem_package;
+package Appointmentsystem_package;
 
-    import javax.swing.*;
-    import java.awt.*;
+import javax.swing.*;
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
-    import java.awt.event.WindowAdapter;
+public class AppointmentWindow {
+    private JFrame frame;
+    private JPanel panel;
+    private JTextField nameField;
+    private JComboBox<String> monthComboBox;
+    private JComboBox<String> dayComboBox;
+    private JComboBox<String> yearComboBox;
+    private JComboBox<String> hourComboBox;
+    private JComboBox<String> minuteComboBox;
+    private JComboBox<String> dentalCareComboBox;
+    private JComboBox<String> doctorComboBox;
+    private JButton addButton;
+    private JButton paymentButton;
+    private JTextArea appointmentList;
 
-    public class AppointmentWindow {
-        private JFrame frame;
-        private JPanel panel;
-        private JTextField nameField;
-        private JComboBox<String> monthComboBox;
-        private JComboBox<String> dayComboBox;
-        private JComboBox<String> yearComboBox;
-        private JComboBox<String> hourComboBox;
-        private JComboBox<String> minuteComboBox;
-        private JComboBox<String> dentalCareComboBox;
-        private JComboBox<String> doctorComboBox;
-        private JButton addButton;
-        private JButton paymentButton;
-        private JTextArea appointmentList;
+    private String[] dentalCareOptions = {
+            "Root Canal Treatment",
+            "Cosmetic Dentistry",
+            "Dental Crown",
+            "Tooth Whitening",
+            "Dental Implants",
+            "Dental Bridge",
+            "Periodontics",
+            "Denture"
+    };
 
-        private String[] dentalCareOptions = {
-                "Root Canal Treatment",
-                "Cosmetic Dentistry",
-                "Dental Crown",
-                "Tooth Whitening",
-                "Dental Implants",
-                "Dental Bridge",
-                "Periodontics",
-                "Denture"
-        };
+    private String[] doctorOptions = {
+            "Dr. Marc Ebreo",
+            "Dr. Ren Gubatanga",
+            "Dr. Darryl Parrocho",
+            "Dr. Cheng Garcia",
+            "Dr. Gabriel Cac",
+            "Dr. Joy Inocencio",
+            "Dr. Vladimir Guimbal",
+            "Dr. Allen Garcia"
+    };
 
-        private String[] doctorOptions = {
-                "Dr. Marc Ebreo",
-                "Dr. Ren Gubatanga",
-                "Dr. Darryl Parrocho",
-                "Dr. Cheng Garcia",
-                "Dr. Gabriel Cac",
-                "Dr. Joy Inocencio",
-                "Dr. Vladimir Guimbal",
-                "Dr. Allen Garcia"
-        };
+    private String lastAddedName;
+    private String lastAddedDate;
+    private String lastAddedTime;
+    private String lastAddedDentalCare;
+    private String lastAddedDoctor;
 
-        private String lastAddedName;
-        private String lastAddedDate;
-        private String lastAddedTime;
-        private String lastAddedDentalCare;
-        private String lastAddedDoctor;
+    private Map<String, String> paymentStatus = new HashMap<>();
+    private BillingWindow billingWindow;
 
-        public AppointmentWindow() {
-            frame = new JFrame("Appointment Window");
-            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            frame.setSize(800, 600);
-            frame.setLocationRelativeTo(null); // Center the window on the screen
-            frame.setResizable(false);
+    public AppointmentWindow() {
+        billingWindow = new BillingWindow(paymentStatus);
 
-            panel = new JPanel(new BorderLayout());
-            frame.add(panel);
+        frame = new JFrame("Appointment Window");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.setLocationRelativeTo(null); // Center the window on the screen
+        frame.setResizable(false);
 
-            nameField = new JTextField(20);
+        // Create menu bar
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("Menu");
+        JMenuItem mainMenuItem = new JMenuItem("Main Menu");
+        mainMenuItem.addActionListener(e -> showMainMenu());
+        menu.add(mainMenuItem);
+        menuBar.add(menu);
+        frame.setJMenuBar(menuBar);
 
-            monthComboBox = new JComboBox<>(new String[]{"January", "February", "March", "April", "May", "June",
-                    "July", "August", "September", "October", "November", "December"});
-            dayComboBox = new JComboBox<>(new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-                    "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25",
-                    "26", "27", "28", "29", "30", "31"});
-            yearComboBox = new JComboBox<>(new String[]{"2023", "2024", "2025"});
+        panel = new JPanel();
+        panel.setLayout(new GridLayout(10, 2, 10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-            hourComboBox = new JComboBox<>(new String[]{"08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18"});
-            minuteComboBox = new JComboBox<>(new String[]{"00", "15", "30", "45"});
+        nameField = new JTextField();
 
-            dentalCareComboBox = new JComboBox<>(dentalCareOptions);
-            doctorComboBox = new JComboBox<>(doctorOptions);
+        monthComboBox = new JComboBox<>(getMonthOptions());
+        dayComboBox = new JComboBox<>(getDayOptions());
+        yearComboBox = new JComboBox<>(getYearOptions());
+        hourComboBox = new JComboBox<>(getHourOptions());
+        minuteComboBox = new JComboBox<>(getMinuteOptions());
 
-            addButton = new JButton("Add Appointment");
+        dentalCareComboBox = new JComboBox<>(dentalCareOptions);
+        doctorComboBox = new JComboBox<>(doctorOptions);
 
-            appointmentList = new JTextArea(20, 50);
-            appointmentList.setEditable(false);
-            JScrollPane scrollPane = new JScrollPane(appointmentList);
+        addButton = new JButton("Add Appointment");
+        addButton.addActionListener(e -> addAppointment());
 
-            JPanel inputPanel = new JPanel(new GridLayout(9, 2, 10, 10)); // Adjust gaps between components
-            inputPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Add padding
+        paymentButton = new JButton("Make Payment");
+        paymentButton.addActionListener(e -> openPaymentWindow());
 
-            inputPanel.add(new JLabel("Patient's Name: "));
-            inputPanel.add(nameField);
-            inputPanel.add(new JLabel("Date of Appointment: "));
-            JPanel datePanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Panel for date components
-            datePanel.add(monthComboBox);
-            datePanel.add(dayComboBox);
-            datePanel.add(yearComboBox);
-            inputPanel.add(datePanel);
-            inputPanel.add(new JLabel("Time of Appointment: "));
-            JPanel timePanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Panel for time components
-            timePanel.add(hourComboBox);
-            timePanel.add(new JLabel(":"));
-            timePanel.add(minuteComboBox);
-            inputPanel.add(timePanel);
-            inputPanel.add(new JLabel("Select Dental Care: "));
-            inputPanel.add(dentalCareComboBox);
-            inputPanel.add(new JLabel("Select Doctor: "));
-            inputPanel.add(doctorComboBox);
-            inputPanel.add(new JLabel()); // Placeholder for alignment
-            inputPanel.add(addButton);
+        appointmentList = new JTextArea(10, 40);
+        appointmentList.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(appointmentList);
 
-            panel.add(inputPanel, BorderLayout.NORTH);
-            panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(new JLabel("Patient's Name: "));
+        panel.add(nameField);
+        panel.add(new JLabel("Month: "));
+        panel.add(monthComboBox);
+        panel.add(new JLabel("Day: "));
+        panel.add(dayComboBox);
+        panel.add(new JLabel("Year: "));
+        panel.add(yearComboBox);
+        panel.add(new JLabel("Hour: "));
+        panel.add(hourComboBox);
+        panel.add(new JLabel("Minute: "));
+        panel.add(minuteComboBox);
+        panel.add(new JLabel("Dental Care: "));
+        panel.add(dentalCareComboBox);
+        panel.add(new JLabel("Doctor: "));
+        panel.add(doctorComboBox);
+        panel.add(addButton);
+        panel.add(paymentButton);
 
-            addButton.addActionListener(e -> addAppointment());
+        frame.add(panel, BorderLayout.NORTH);
+        frame.add(scrollPane, BorderLayout.CENTER);
 
-            paymentButton = new JButton("Payment");
-            paymentButton.setVisible(false);
-            paymentButton.addActionListener(e -> showPaymentDialog());
-
-            panel.add(paymentButton, BorderLayout.SOUTH);
-
-            frame.setVisible(true);
-        }
-
-        private void addAppointment() {
-            String name = nameField.getText().trim();
-            String month = (String) monthComboBox.getSelectedItem();
-            String day = (String) dayComboBox.getSelectedItem();
-            String year = (String) yearComboBox.getSelectedItem();
-            String hour = (String) hourComboBox.getSelectedItem();
-            String minute = (String) minuteComboBox.getSelectedItem();
-            String dentalCare = (String) dentalCareComboBox.getSelectedItem();
-            String doctor = (String) doctorComboBox.getSelectedItem();
-
-            if (name.isEmpty()) {
-                JOptionPane.showMessageDialog(frame, "Please enter patient's name.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            String dateTime = String.format("%s %s, %s at %s:%s", month, day, year, hour, minute);
-            String appointmentDetails = String.format("Patient's Name: %s\nDate and Time: %s\nDental Care: %s\nDoctor: %s\n\n",
-                    name, dateTime, dentalCare, doctor);
-
-            lastAddedName = name;
-            lastAddedDate = String.format("%s %s, %s", month, day, year);
-            lastAddedTime = String.format("%s:%s", hour, minute);
-            lastAddedDentalCare = dentalCare;
-            lastAddedDoctor = doctor;
-
-            appointmentList.append(appointmentDetails);
-
-            nameField.setText("");
-
-            JOptionPane.showMessageDialog(frame, "Appointment added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-
-            paymentButton.setVisible(true);
-        }
-
-        private void showPaymentDialog() {
-            new PaymentWindow(lastAddedName, lastAddedDate, lastAddedTime, lastAddedDentalCare, lastAddedDoctor);
-        }
-
-
+        frame.setVisible(true);
     }
+
+    private void addAppointment() {
+        String name = nameField.getText();
+        String date = String.format("%s %s, %s", monthComboBox.getSelectedItem(), dayComboBox.getSelectedItem(), yearComboBox.getSelectedItem());
+        String time = String.format("%s:%s", hourComboBox.getSelectedItem(), minuteComboBox.getSelectedItem());
+        String dentalCare = (String) dentalCareComboBox.getSelectedItem();
+        String doctor = (String) doctorComboBox.getSelectedItem();
+
+        lastAddedName = name;
+        lastAddedDate = date;
+        lastAddedTime = time;
+        lastAddedDentalCare = dentalCare;
+        lastAddedDoctor = doctor;
+
+        String appointmentDetails = String.format("Patient: %s\nDate: %s\nTime: %s\nDental Care: %s\nDoctor: %s\n\n", name, date, time, dentalCare, doctor);
+        appointmentList.append(appointmentDetails);
+
+        String key = createKey(name, date, time, dentalCare, doctor);
+        paymentStatus.put(key, "Pending");
+
+        billingWindow.updateStatus();
+    }
+
+    private void openPaymentWindow() {
+        new PaymentWindow(lastAddedName, lastAddedDate, lastAddedTime, lastAddedDentalCare, lastAddedDoctor, paymentStatus, billingWindow);
+    }
+
+    private String createKey(String name, String date, String time, String dentalCare, String doctor) {
+        return String.format("%s;%s;%s;%s;%s", name, date, time, dentalCare, doctor);
+    }
+
+    private String[] getMonthOptions() {
+        return new String[]{"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+    }
+
+    private String[] getDayOptions() {
+        String[] days = new String[31];
+        for (int i = 0; i < 31; i++) {
+            days[i] = Integer.toString(i + 1);
+        }
+        return days;
+    }
+
+    private String[] getYearOptions() {
+        String[] years = new String[5];
+        int currentYear = java.time.Year.now().getValue();
+        for (int i = 0; i < 5; i++) {
+            years[i] = Integer.toString(currentYear + i);
+        }
+        return years;
+    }
+
+    private String[] getHourOptions() {
+        String[] hours = new String[24];
+        for (int i = 0; i < 24; i++) {
+            hours[i] = String.format("%02d", i);
+        }
+        return hours;
+    }
+
+    private String[] getMinuteOptions() {
+        String[] minutes = new String[60];
+        for (int i = 0; i < 60; i++) {
+            minutes[i] = String.format("%02d", i);
+        }
+        return minutes;
+    }
+
+    private void showMainMenu() {
+        // Code to show the main menu
+    }
+}

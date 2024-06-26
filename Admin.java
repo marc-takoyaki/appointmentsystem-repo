@@ -23,6 +23,7 @@ public class Admin extends JFrame implements ActionListener {
         this.setBounds(520, 200, 650, 500);
         this.setLayout(new BorderLayout()); // Use BorderLayout for better component management
 
+        // Create a panel with a blue background
         JPanel introPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -41,8 +42,10 @@ public class Admin extends JFrame implements ActionListener {
         introPanel.add(introLabel);
         introPanel.add(Box.createVerticalGlue()); // Align components at the bottom
 
+        // Add the intro panel to the frame
         this.add(introPanel, BorderLayout.CENTER);
 
+        // Create the menu bar
         menuBar = new JMenuBar();
         PatientManagementMenu = new JMenu("Patient Management");
         BillingPaymentMenu = new JMenu("Billing and Payment");
@@ -64,6 +67,7 @@ public class Admin extends JFrame implements ActionListener {
         menuBar.add(InventorySupplyMenuItem);
         menuBar.add(StaffManagementMenuItem);
 
+        // Add the menu bar to the frame
         this.setJMenuBar(menuBar);
         this.setVisible(true);
     }
@@ -71,12 +75,13 @@ public class Admin extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == PatientManagementMenuItem) {
+            // Replace with actual patient management logic
         } else if (e.getSource() == BillingPaymentMenuItem) {
-            BillingPaymentWindow bill = new BillingPaymentWindow();
+            // Replace with actual billing and payment handling logic
         } else if (e.getSource() == InventorySupplyMenuItem) {
-
+            // Replace with actual inventory supply handling logic
         } else if (e.getSource() == StaffManagementMenuItem) {
-
+            // Replace with actual staff management handling logic
         }
     }
 

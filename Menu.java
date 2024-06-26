@@ -88,6 +88,7 @@ public class Menu extends JFrame implements ActionListener {
         if (e.getSource() == ScheduleMenuItem) {
             AppointmentWindow appointmentWindow = new AppointmentWindow();
             this.dispose();
+
         } else if (e.getSource() == HomeMenuItem) {
             HomeWindow homeWindow = new HomeWindow();
             this.dispose();
@@ -102,11 +103,16 @@ public class Menu extends JFrame implements ActionListener {
             this.dispose();
         }
     }
+
+    // Method to handle payment made event from PaymentWindow
+    public void paymentMade() {
+        // Perform any actions needed after payment is made
+        // For example, refresh some data or update UI elements
+        JOptionPane.showMessageDialog(this, "Payment made successfully.", "Payment", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(Admin::new);
-
-
-}
-
+        SwingUtilities.invokeLater(Menu::new);
+    }
 
 }

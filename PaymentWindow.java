@@ -2,9 +2,7 @@ package Appointmentsystem_package;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 public class PaymentWindow {
     private JFrame frame;
@@ -15,11 +13,16 @@ public class PaymentWindow {
     private JTextField dentalCareField;
     private JTextField doctorField;
     private JTextArea paymentDetailsArea;
+    private JLabel paymentStatusLabel;
     private JButton calculateButton;
     private JButton payButton;
-    private List<PaymentListener> paymentListeners = new ArrayList<>();
+    private Map<String, String> paymentStatus;
+    private BillingWindow billingWindow;
 
-    public PaymentWindow(String name, String date, String time, String dentalCare, String doctor) {
+    public PaymentWindow(String name, String date, String time, String dentalCare, String doctor, Map<String, String> paymentStatus, BillingWindow billingWindow) {
+        this.paymentStatus = paymentStatus;
+        this.billingWindow = billingWindow;
+
         // Create the frame
         frame = new JFrame("Payment System");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -28,7 +31,7 @@ public class PaymentWindow {
         frame.setResizable(false);
 
         // Create the panel
-        panel = new JPanel(new GridLayout(6, 2, 10, 10)); // 6 rows, 2 columns, 10px gaps
+        panel = new JPanel(new GridLayout(7, 2, 10, 10)); // 7 rows, 2 columns, 10px gaps
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Add padding
 
         // Create input fields and labels
@@ -51,6 +54,9 @@ public class PaymentWindow {
         paymentDetailsArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(paymentDetailsArea);
 
+        // Create the payment status label
+        paymentStatusLabel = new JLabel("Payment Status: " + paymentStatus.getOrDefault(createKey(name, date, time, dentalCare, doctor), "Pending"));
+
         // Add components to panel
         panel.add(new JLabel("Patient's Name: "));
         panel.add(nameField);
@@ -62,6 +68,7 @@ public class PaymentWindow {
         panel.add(dentalCareField);
         panel.add(new JLabel("Doctor: "));
         panel.add(doctorField);
+        panel.add(paymentStatusLabel); // Add payment status label to the panel
 
         // Create the calculate button
         calculateButton = new JButton("Calculate Payment");
@@ -81,10 +88,6 @@ public class PaymentWindow {
 
         // Make the frame visible
         frame.setVisible(true);
-    }
-
-    public void addPaymentListener(PaymentListener listener) {
-        paymentListeners.add(listener);
     }
 
     private void calculatePayment() {
@@ -144,17 +147,21 @@ public class PaymentWindow {
     }
 
     private void handlePayment() {
-        // Notify all listeners that payment is made
-        for (PaymentListener listener : paymentListeners) {
-            listener.paymentMade(nameField.getText());
-        }
+        // Update payment status
+        String key = createKey(nameField.getText(), dateField.getText(), timeField.getText(), dentalCareField.getText(), doctorField.getText());
+        paymentStatus.put(key, "Paid");
+        paymentStatusLabel.setText("Payment Status: " + paymentStatus.get(key));
 
         JOptionPane.showMessageDialog(frame, "Paid Successfully", "Payment", JOptionPane.INFORMATION_MESSAGE);
-        // Replace with your actual payment logic
 
+        // Print payment status to console
+        System.out.println("Payment Status Updated: " + paymentStatus.get(key));
+
+        // Update the billing window with the new status
+        billingWindow.updateStatus();
     }
 
-    public interface PaymentListener {
-        void paymentMade(String patientName);
+    private String createKey(String name, String date, String time, String dentalCare, String doctor) {
+        return String.format("%s;%s;%s;%s;%s", name, date, time, dentalCare, doctor);
     }
 }
