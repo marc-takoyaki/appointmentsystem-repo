@@ -7,7 +7,9 @@ import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Admin extends JFrame implements ActionListener {
@@ -16,11 +18,11 @@ public class Admin extends JFrame implements ActionListener {
     private JMenu patientManagementMenu;
     private JMenu billingPaymentMenu;
     private JMenu inventorySupplyMenu;
-    private JMenu staffManagementMenu;
+    private JMenu doctorSchedulerMenu;
     private JMenuItem patientManagementMenuItem;
     private JMenuItem billingPaymentMenuItem;
     private JMenuItem inventorySupplyMenuItem;
-    private JMenuItem staffManagementMenuItem;
+    private JMenuItem doctorSchedulerMenuItem;
     private JButton logoutButton;
     private Map<String, String> paymentStatus = new HashMap<>();
 
@@ -58,29 +60,31 @@ public class Admin extends JFrame implements ActionListener {
         patientManagementMenu = new JMenu("Patient Management");
         billingPaymentMenu = new JMenu("Billing Payment");
         inventorySupplyMenu = new JMenu("Inventory/Supply");
-        staffManagementMenu = new JMenu("Staff Management");
+        doctorSchedulerMenu = new JMenu("Doctor Scheduler");
 
         patientManagementMenuItem = new JMenuItem("Patient Management");
         billingPaymentMenuItem = new JMenuItem("Billing Payment");
         inventorySupplyMenuItem = new JMenuItem("Inventory/Supply");
-        staffManagementMenuItem = new JMenuItem("Staff Management");
+        doctorSchedulerMenuItem = new JMenuItem("Doctor Scheduler");
 
         patientManagementMenuItem.addActionListener(this);
         billingPaymentMenuItem.addActionListener(this);
         inventorySupplyMenuItem.addActionListener(this);
-        staffManagementMenuItem.addActionListener(this);
+        doctorSchedulerMenuItem.addActionListener(this);
 
         patientManagementMenu.add(patientManagementMenuItem);
         billingPaymentMenu.add(billingPaymentMenuItem);
         inventorySupplyMenu.add(inventorySupplyMenuItem);
-        staffManagementMenu.add(staffManagementMenuItem);
+        doctorSchedulerMenu.add(doctorSchedulerMenuItem);
 
         menuBar.add(patientManagementMenu);
         menuBar.add(billingPaymentMenu);
         menuBar.add(inventorySupplyMenu);
-        menuBar.add(staffManagementMenu);
+        menuBar.add(doctorSchedulerMenu);
 
         setJMenuBar(menuBar);
+
+        loadAppointments(); // Load appointments initially
 
         setVisible(true);
     }
@@ -89,16 +93,18 @@ public class Admin extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == patientManagementMenuItem) {
             // Open patient management window
-            // new PatientManagementWindow();
+            List<String> initialPatients = new ArrayList<>(paymentStatus.keySet());
+            SwingUtilities.invokeLater(() -> new PatientManagementWindow(initialPatients));
+            dispose();
         } else if (e.getSource() == billingPaymentMenuItem) {
             loadAppointments();
             new BillingWindow(paymentStatus);
         } else if (e.getSource() == inventorySupplyMenuItem) {
             // Open inventory/supply window
-            // new InventorySupplyWindow();
-        } else if (e.getSource() == staffManagementMenuItem) {
-            // Open staff management window
-            // new StaffManagementWindow();
+            new InventorySupplyWindow();
+        } else if (e.getSource() == doctorSchedulerMenuItem) {
+            // Open Doctor Scheduler window
+            new DoctorMonitoringWindow(paymentStatus);
         }
     }
 

@@ -5,6 +5,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.Map;
 
 public class BillingWindow extends JFrame {
@@ -13,6 +14,7 @@ public class BillingWindow extends JFrame {
     private DefaultTableModel tableModel;
     private Map<String, String> paymentStatus;
     private JButton payButton;
+    private JButton removeButton; // New button for removing appointments
     private PaymentWindow paymentWindow;
 
     public BillingWindow(Map<String, String> paymentStatus) {
@@ -53,7 +55,34 @@ public class BillingWindow extends JFrame {
             }
         });
 
+        // Create the remove button
+        removeButton = new JButton("Remove Client");
+        removeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(BillingWindow.this, "Please select a row to remove the appointment.", "Remove Appointment Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                String name = table.getValueAt(selectedRow, 0).toString();
+                String date = table.getValueAt(selectedRow, 1).toString();
+                String time = table.getValueAt(selectedRow, 2).toString();
+                String dentalCare = table.getValueAt(selectedRow, 3).toString();
+                String doctor = table.getValueAt(selectedRow, 4).toString();
+
+                // Remove the appointment from paymentStatus map
+                String key = createKey(name, date, time, dentalCare, doctor);
+                paymentStatus.remove(key);
+
+                // Update the table
+                updateStatus();
+            }
+        });
+
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(removeButton); // Add remove button
         buttonPanel.add(payButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
@@ -74,5 +103,20 @@ public class BillingWindow extends JFrame {
                 tableModel.addRow(new Object[]{details[0], details[1], details[2], details[3], details[4], entry.getValue()});
             }
         }
+    }
+
+    private String createKey(String name, String date, String time, String dentalCare, String doctor) {
+        return String.format("%s;%s;%s;%s;%s", name, date, time, dentalCare, doctor);
+    }
+
+    public static void main(String[] args) {
+        // Sample usage:
+        SwingUtilities.invokeLater(() -> {
+            Map<String, String> paymentStatus = new HashMap<>(); // Initialize with some data
+            paymentStatus.put("John Doe;June 28, 2024;10:00;Dental Checkup;Dr. Smith", "Pending");
+            paymentStatus.put("Jane Smith;June 29, 2024;14:30;Tooth Extraction;Dr. Brown", "Paid");
+
+            new BillingWindow(paymentStatus);
+        });
     }
 }

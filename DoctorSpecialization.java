@@ -126,6 +126,6 @@ public class DoctorSpecialization {
 
     private void goToHome(ActionEvent e) {
         frame.dispose(); // Dispose of current window
-        new Admin(); // Open the main menu
+        new Menu(); // Open the main menu
     }
 }

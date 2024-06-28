@@ -3,8 +3,7 @@ package Appointmentsystem_package;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class AppointmentWindow {
     private JFrame frame;
@@ -18,9 +17,11 @@ public class AppointmentWindow {
     private JComboBox<String> dentalCareComboBox;
     private JComboBox<String> doctorComboBox;
     private JButton addButton;
-    private JTextArea appointmentList;
+    private JButton removeButton;
+    private JButton clearButton;
+    private DefaultListModel<String> appointmentListModel;
 
-    private String[] dentalCareOptions = {
+    public static String[] dentalCareOptions = {
             "Root Canal Treatment",
             "Cosmetic Dentistry",
             "Dental Crown",
@@ -31,7 +32,7 @@ public class AppointmentWindow {
             "Denture"
     };
 
-    private String[] doctorOptions = {
+    public static String[] doctorOptions = {
             "Dr. Marc Ebreo",
             "Dr. Ren Gubatanga",
             "Dr. Darryl Parrocho",
@@ -78,8 +79,14 @@ public class AppointmentWindow {
         addButton = new JButton("Add Appointment");
         addButton.addActionListener(e -> addAppointment());
 
-        appointmentList = new JTextArea(10, 40);
-        appointmentList.setEditable(false);
+        removeButton = new JButton("Remove Selected");
+        removeButton.addActionListener(e -> removeAppointment());
+
+        clearButton = new JButton("Clear All Appointments");
+        clearButton.addActionListener(e -> clearAppointments());
+
+        appointmentListModel = new DefaultListModel<>();
+        JList<String> appointmentList = new JList<>(appointmentListModel);
         JScrollPane scrollPane = new JScrollPane(appointmentList);
 
         panel.add(new JLabel("Patient's Name: "));
@@ -99,6 +106,8 @@ public class AppointmentWindow {
         panel.add(new JLabel("Doctor: "));
         panel.add(doctorComboBox);
         panel.add(addButton);
+        panel.add(removeButton);
+        panel.add(clearButton);
 
         frame.add(panel, BorderLayout.NORTH);
         frame.add(scrollPane, BorderLayout.CENTER);
@@ -115,13 +124,43 @@ public class AppointmentWindow {
         String dentalCare = (String) dentalCareComboBox.getSelectedItem();
         String doctor = (String) doctorComboBox.getSelectedItem();
 
-        String appointmentDetails = String.format("Patient: %s\nDate: %s\nTime: %s\nDental Care: %s\nDoctor: %s\n\n", name, date, time, dentalCare, doctor);
-        appointmentList.append(appointmentDetails);
+        String appointmentDetails = String.format("Patient: %s, Date: %s, Time: %s, Dental Care: %s, Doctor: %s",
+                name, date, time, dentalCare, doctor);
+        appointmentListModel.addElement(appointmentDetails);
 
         String key = createKey(name, date, time, dentalCare, doctor);
         paymentStatus.put(key, "Pending");
 
         saveAppointments();
+
+        // Update Doctor Monitoring Window
+        updateDoctorMonitoring();
+    }
+
+    private void removeAppointment() {
+        int selectedIndex = appointmentListModel.getSize() - 1; // Get last selected index
+        if (selectedIndex >= 0) {
+            String appointmentDetails = appointmentListModel.getElementAt(selectedIndex);
+            appointmentListModel.removeElementAt(selectedIndex);
+
+            // Remove from paymentStatus map
+            String keyToRemove = getKeyFromDetails(appointmentDetails);
+            paymentStatus.remove(keyToRemove);
+
+            saveAppointments();
+
+            // Update Doctor Monitoring Window
+            updateDoctorMonitoring();
+        }
+    }
+
+    private void clearAppointments() {
+        appointmentListModel.clear();
+        paymentStatus.clear();
+        saveAppointments();
+
+        // Update Doctor Monitoring Window
+        updateDoctorMonitoring();
     }
 
     private void saveAppointments() {
@@ -136,11 +175,8 @@ public class AppointmentWindow {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("appointments.dat"))) {
             paymentStatus = (Map<String, String>) ois.readObject();
             for (String key : paymentStatus.keySet()) {
-                String[] details = key.split(";");
-                if (details.length == 5) {
-                    String appointmentDetails = String.format("Patient: %s\nDate: %s\nTime: %s\nDental Care: %s\nDoctor: %s\n\n", details[0], details[1], details[2], details[3], details[4]);
-                    appointmentList.append(appointmentDetails);
-                }
+                String appointmentDetails = createDetailsFromKey(key);
+                appointmentListModel.addElement(appointmentDetails);
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -149,6 +185,28 @@ public class AppointmentWindow {
 
     private String createKey(String name, String date, String time, String dentalCare, String doctor) {
         return String.format("%s;%s;%s;%s;%s", name, date, time, dentalCare, doctor);
+    }
+
+    private String createDetailsFromKey(String key) {
+        String[] details = key.split(";");
+        if (details.length == 5) {
+            return String.format("Patient: %s, Date: %s, Time: %s, Dental Care: %s, Doctor: %s",
+                    details[0], details[1], details[2], details[3], details[4]);
+        }
+        return "";
+    }
+
+    private String getKeyFromDetails(String details) {
+        String[] parts = details.split(", ");
+        if (parts.length == 5) {
+            String name = parts[0].split(": ")[1];
+            String date = parts[1].split(": ")[1];
+            String time = parts[2].split(": ")[1];
+            String dentalCare = parts[3].split(": ")[1];
+            String doctor = parts[4].split(": ")[1];
+            return createKey(name, date, time, dentalCare, doctor);
+        }
+        return "";
     }
 
     private String[] getMonthOptions() {
@@ -193,8 +251,11 @@ public class AppointmentWindow {
         frame.dispose();
     }
 
-    public Map<String, String> getPaymentStatus() {
-        return paymentStatus;
+    private void updateDoctorMonitoring() {
+        SwingUtilities.invokeLater(() -> {
+            DoctorMonitoringWindow monitoringWindow = new DoctorMonitoringWindow(paymentStatus);
+            monitoringWindow.setVisible(true);
+        });
     }
 
     public static void main(String[] args) {
