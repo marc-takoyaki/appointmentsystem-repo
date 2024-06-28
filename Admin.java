@@ -4,7 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Admin extends JFrame implements ActionListener {
 
@@ -18,6 +22,7 @@ public class Admin extends JFrame implements ActionListener {
     private JMenuItem inventorySupplyMenuItem;
     private JMenuItem staffManagementMenuItem;
     private JButton logoutButton;
+    private Map<String, String> paymentStatus = new HashMap<>();
 
     Admin() {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -37,77 +42,78 @@ public class Admin extends JFrame implements ActionListener {
         introPanel.setLayout(new BoxLayout(introPanel, BoxLayout.Y_AXIS));
         introPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        JLabel introLabel = new JLabel("WELCOME TO THE ADMIN SYSTEM");
+        JLabel introLabel = new JLabel("WELCOME TO THE ADMIN SYSTEM!");
         introLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        introPanel.add(Box.createVerticalGlue());
+        introLabel.setFont(new Font("Arial", Font.BOLD, 18));
         introPanel.add(introLabel);
-        introPanel.add(Box.createVerticalGlue());
 
-        // Add the intro panel to the frame
         add(introPanel, BorderLayout.CENTER);
 
-        // Create the menu bar and menus
+        logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(e -> logout());
+
+        add(logoutButton, BorderLayout.SOUTH);
+
         menuBar = new JMenuBar();
         patientManagementMenu = new JMenu("Patient Management");
-        billingPaymentMenu = new JMenu("Billing and Payment");
-        inventorySupplyMenu = new JMenu("Inventory Supply");
+        billingPaymentMenu = new JMenu("Billing Payment");
+        inventorySupplyMenu = new JMenu("Inventory/Supply");
         staffManagementMenu = new JMenu("Staff Management");
 
-        // Create menu items
         patientManagementMenuItem = new JMenuItem("Patient Management");
-        billingPaymentMenuItem = new JMenuItem("Billing and Payment");
-        inventorySupplyMenuItem = new JMenuItem("Inventory Supply");
+        billingPaymentMenuItem = new JMenuItem("Billing Payment");
+        inventorySupplyMenuItem = new JMenuItem("Inventory/Supply");
         staffManagementMenuItem = new JMenuItem("Staff Management");
 
-        // Add action listener to menu items
         patientManagementMenuItem.addActionListener(this);
         billingPaymentMenuItem.addActionListener(this);
         inventorySupplyMenuItem.addActionListener(this);
         staffManagementMenuItem.addActionListener(this);
 
-        // Add menu items to respective menus
         patientManagementMenu.add(patientManagementMenuItem);
         billingPaymentMenu.add(billingPaymentMenuItem);
         inventorySupplyMenu.add(inventorySupplyMenuItem);
         staffManagementMenu.add(staffManagementMenuItem);
 
-        // Add menus to menu bar
         menuBar.add(patientManagementMenu);
         menuBar.add(billingPaymentMenu);
         menuBar.add(inventorySupplyMenu);
         menuBar.add(staffManagementMenu);
 
-        // Set menu bar to frame
         setJMenuBar(menuBar);
-
-        // Create a logout button panel
-        JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        logoutButton = new JButton("Logout");
-        logoutButton.addActionListener(this);
-        logoutPanel.add(logoutButton);
-
-        // Add logout panel to the frame
-        add(logoutPanel, BorderLayout.SOUTH);
 
         setVisible(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals("Patient Management")) {
-            JOptionPane.showMessageDialog(this, "Patient Management functionality to be implemented.");
-        } else if (e.getActionCommand().equals("Billing and Payment")) {
-            new BillingWindow(new HashMap<>()); // Initialize with an empty map or load from persistent storage
-        } else if (e.getActionCommand().equals("Inventory Supply")) {
-            JOptionPane.showMessageDialog(this, "Inventory Supply functionality to be implemented.");
-        } else if (e.getActionCommand().equals("Staff Management")) {
-            JOptionPane.showMessageDialog(this, "Staff Management functionality to be implemented.");
-        } else if (e.getSource() == logoutButton) {
-            // Handle logout button click
-            new Login_menu();
-            dispose(); // Close the admin window
+        if (e.getSource() == patientManagementMenuItem) {
+            // Open patient management window
+            // new PatientManagementWindow();
+        } else if (e.getSource() == billingPaymentMenuItem) {
+            loadAppointments();
+            new BillingWindow(paymentStatus);
+        } else if (e.getSource() == inventorySupplyMenuItem) {
+            // Open inventory/supply window
+            // new InventorySupplyWindow();
+        } else if (e.getSource() == staffManagementMenuItem) {
+            // Open staff management window
+            // new StaffManagementWindow();
         }
+    }
+
+    private void loadAppointments() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("appointments.dat"))) {
+            paymentStatus = (Map<String, String>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void logout() {
+        // Handle logout functionality
+        new Menu();
+        dispose();
     }
 
     public static void main(String[] args) {

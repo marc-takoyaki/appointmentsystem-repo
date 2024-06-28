@@ -43,7 +43,6 @@ public class AppointmentWindow {
     };
 
     private Map<String, String> paymentStatus = new HashMap<>();
-    private BillingWindow billingWindow;
 
     public AppointmentWindow() {
         frame = new JFrame("Appointment Window");
@@ -123,7 +122,6 @@ public class AppointmentWindow {
         paymentStatus.put(key, "Pending");
 
         saveAppointments();
-        updateBillingStatus();
     }
 
     private void saveAppointments() {
@@ -147,13 +145,6 @@ public class AppointmentWindow {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    private void updateBillingStatus() {
-        if (billingWindow == null) {
-            billingWindow = new BillingWindow(paymentStatus);
-        }
-        billingWindow.updateStatus();
     }
 
     private String createKey(String name, String date, String time, String dentalCare, String doctor) {
@@ -198,8 +189,12 @@ public class AppointmentWindow {
     }
 
     private void showMainMenu() {
-        Menu menu = new Menu();
+        new Menu();
         frame.dispose();
+    }
+
+    public Map<String, String> getPaymentStatus() {
+        return paymentStatus;
     }
 
     public static void main(String[] args) {
