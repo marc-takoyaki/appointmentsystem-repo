@@ -53,7 +53,7 @@ public class DoctorSpecialization {
         isOpen = true;
 
         frame = new JFrame("Doctor Specialization");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.setSize(560, 600);
         frame.setLayout(new BorderLayout());
         frame.setLocationRelativeTo(null); // Center the frame on screen

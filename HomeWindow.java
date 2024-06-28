@@ -8,7 +8,7 @@ class HomeWindow extends JFrame {
     private JButton loginButton;
 
     public HomeWindow() {
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setTitle("Home Menu");
         setSize(500, 400);
         setLocationRelativeTo(null); // Center the window on the screen

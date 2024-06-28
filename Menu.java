@@ -19,7 +19,7 @@ public class Menu extends JFrame implements ActionListener {
     private JButton logoutButton; // New logout button
 
     Menu() {
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
         this.setSize(500, 500);
         this.setBounds(520, 200, 500, 400);
         this.setLayout(new BorderLayout()); // Use BorderLayout for better component management

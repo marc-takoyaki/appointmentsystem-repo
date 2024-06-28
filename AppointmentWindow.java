@@ -2,6 +2,7 @@ package Appointmentsystem_package;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +18,6 @@ public class AppointmentWindow {
     private JComboBox<String> dentalCareComboBox;
     private JComboBox<String> doctorComboBox;
     private JButton addButton;
-    private JButton paymentButton;
     private JTextArea appointmentList;
 
     private String[] dentalCareOptions = {
@@ -42,18 +42,10 @@ public class AppointmentWindow {
             "Dr. Allen Garcia"
     };
 
-    private String lastAddedName;
-    private String lastAddedDate;
-    private String lastAddedTime;
-    private String lastAddedDentalCare;
-    private String lastAddedDoctor;
-
     private Map<String, String> paymentStatus = new HashMap<>();
     private BillingWindow billingWindow;
 
     public AppointmentWindow() {
-        billingWindow = new BillingWindow(paymentStatus);
-
         frame = new JFrame("Appointment Window");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(800, 600);
@@ -87,9 +79,6 @@ public class AppointmentWindow {
         addButton = new JButton("Add Appointment");
         addButton.addActionListener(e -> addAppointment());
 
-        paymentButton = new JButton("Make Payment");
-        paymentButton.addActionListener(e -> openPaymentWindow());
-
         appointmentList = new JTextArea(10, 40);
         appointmentList.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(appointmentList);
@@ -111,10 +100,11 @@ public class AppointmentWindow {
         panel.add(new JLabel("Doctor: "));
         panel.add(doctorComboBox);
         panel.add(addButton);
-        panel.add(paymentButton);
 
         frame.add(panel, BorderLayout.NORTH);
         frame.add(scrollPane, BorderLayout.CENTER);
+
+        loadAppointments();
 
         frame.setVisible(true);
     }
@@ -126,23 +116,44 @@ public class AppointmentWindow {
         String dentalCare = (String) dentalCareComboBox.getSelectedItem();
         String doctor = (String) doctorComboBox.getSelectedItem();
 
-        lastAddedName = name;
-        lastAddedDate = date;
-        lastAddedTime = time;
-        lastAddedDentalCare = dentalCare;
-        lastAddedDoctor = doctor;
-
         String appointmentDetails = String.format("Patient: %s\nDate: %s\nTime: %s\nDental Care: %s\nDoctor: %s\n\n", name, date, time, dentalCare, doctor);
         appointmentList.append(appointmentDetails);
 
         String key = createKey(name, date, time, dentalCare, doctor);
         paymentStatus.put(key, "Pending");
 
-        billingWindow.updateStatus();
+        saveAppointments();
+        updateBillingStatus();
     }
 
-    private void openPaymentWindow() {
-        new PaymentWindow(lastAddedName, lastAddedDate, lastAddedTime, lastAddedDentalCare, lastAddedDoctor, paymentStatus, billingWindow);
+    private void saveAppointments() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("appointments.dat"))) {
+            oos.writeObject(paymentStatus);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadAppointments() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("appointments.dat"))) {
+            paymentStatus = (Map<String, String>) ois.readObject();
+            for (String key : paymentStatus.keySet()) {
+                String[] details = key.split(";");
+                if (details.length == 5) {
+                    String appointmentDetails = String.format("Patient: %s\nDate: %s\nTime: %s\nDental Care: %s\nDoctor: %s\n\n", details[0], details[1], details[2], details[3], details[4]);
+                    appointmentList.append(appointmentDetails);
+                }
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateBillingStatus() {
+        if (billingWindow == null) {
+            billingWindow = new BillingWindow(paymentStatus);
+        }
+        billingWindow.updateStatus();
     }
 
     private String createKey(String name, String date, String time, String dentalCare, String doctor) {
@@ -187,6 +198,11 @@ public class AppointmentWindow {
     }
 
     private void showMainMenu() {
-        // Code to show the main menu
+        Menu menu = new Menu();
+        frame.dispose();
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(AppointmentWindow::new);
     }
 }

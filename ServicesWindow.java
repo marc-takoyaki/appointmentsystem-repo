@@ -23,7 +23,7 @@ public class ServicesWindow {
         frame = new JFrame();
         frame.setSize(700, 700);
         frame.setLocationRelativeTo(null); // Center the window on the screen
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.setResizable(false);
         frame.setLayout(null); // Using absolute layout for simplicity
 

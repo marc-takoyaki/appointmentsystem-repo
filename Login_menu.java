@@ -19,7 +19,7 @@ public class Login_menu implements ActionListener {
         frame = new JFrame("Login Menu");
         frame.setSize(500, 400);
         frame.setBounds(520, 200, 500, 400);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE  );
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE  );
         frame.setResizable(false);
 
         panel = new JPanel();

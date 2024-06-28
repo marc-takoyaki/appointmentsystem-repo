@@ -25,7 +25,7 @@ public class PaymentWindow {
 
         // Create the frame
         frame = new JFrame("Payment System");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.setSize(500, 400);
         frame.setLocationRelativeTo(null); // Center the window on the screen
         frame.setResizable(false);
@@ -159,6 +159,9 @@ public class PaymentWindow {
 
         // Update the billing window with the new status
         billingWindow.updateStatus();
+
+        // Close the payment window
+        frame.dispose();
     }
 
     private String createKey(String name, String date, String time, String dentalCare, String doctor) {
